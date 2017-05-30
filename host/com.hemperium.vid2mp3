@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+import sys
+import json
+import struct
+import youtube_dl
+import taglib
+import logging
+import notify2
+import os
+
+userpath = '/home/user/Downloads'
+
+logging.basicConfig(filename='logfile',level=logging.DEBUG)
+
+class MyLogger(object):
+    def debug(self, msg):
+        pass
+    def warning(self, msg):
+        pass
+    def error(self, msg):
+        logging.error(msg)
+
+def getInfo(msg):
+
+    url = msg['url'].split("&list=")
+    url = url[0]
+
+    ydl_opts = {
+        'ignoreerrors': True,
+        'skip_download': True,
+        'extract_flat': True,
+        'noplaylist': True,
+        'logger': MyLogger(),
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(str(url), download=False)
+
+    data = msg
+    data['title'] = "none"
+    data['status'] = "is_none"
+
+    if info:
+        if '_type' in info:
+            if  info['_type'] == "playlist":
+                data['status'] = "is_playlist"
+            else:
+                data['status'] = info['_type']
+        else:
+            if 'title' in info:
+                data['status'] = "is_valid_url"
+                data['title'] = info['title'].replace('"','\\"')
+
+                if 'duration' in info:
+                    data['duration'] = info['duration']
+
+                if 'thumbnail' in info:
+                    data['thumb'] = info['thumbnail']
+
+    send_msg(data)
+
+def download(msg):
+
+    data = msg
+    def my_hook(g):
+
+        if {'total_bytes', 'downloaded_bytes'} <= set(g):
+            percent = str(float(g['downloaded_bytes'])/float(g['total_bytes']) * 100.0)
+        else:
+            percent = str(2)
+
+        if g['status'] == 'downloading':
+            data['dl_status'] = "downloading"
+            data['dl_progress'] = percent[0:5]
+        if g['status'] == 'finished':
+            data['dl_status'] = "converting"
+
+        send_msg(data)
+
+    destination = userpath + '%(title)s.%(ext)s'
+    ydl_opts = {
+        'format': 'bestaudio',
+        'noplaylist' : True,
+        'outtmpl': destination,
+        'verbose': True,
+        'ignoreerrors': True,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'progress_hooks': [my_hook],
+        'logger': MyLogger(),
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(str(msg['url']), download=False)
+        download_target = ydl.prepare_filename(info)
+        ydl.download([msg['url']])
+
+
+    file_path = download_target.rsplit('.',1)[0]+".mp3"
+
+    if '-' in info['title']:
+        raw_tags = info['title'].split("-")
+        song = taglib.File(file_path)
+        song.tags["ARTIST"] = [raw_tags[0]]
+        song.tags["TITLE"] = [raw_tags[1]]
+        song.save()
+    elif 'uploader' in info:
+        song = taglib.File(file_path)
+        song.tags["ARTIST"] = [info['uploader']]
+        song.tags["TITLE"] = [info['title']]
+        song.save()
+
+        infostr = info['title'].replace('/','_"')
+
+        filename_dest = userpath + info['uploader'] + " - " + infostr + ".mp3"
+        os.rename(file_path, filename_dest)
+
+    data['dl_status'] = "done"
+    send_msg(data)
+
+    notify2.init('Download Beendet')
+    icon = "/home/user/.config/opera/NativeMessagingHosts/icon128.png"
+    n = notify2.Notification(info['title']+".mp3","wurde gespeichert",icon)
+    n.show()
+
+# Function to send a message to chrome.
+def send_msg(MSG_DICT):
+    # Converts dictionary into string containing JSON format.
+    msg_json = json.dumps(MSG_DICT)
+    # Encodes string with UTF-8.
+    msg_json_utf8 = msg_json.encode("utf-8")
+    # Writes the message size. (Writing to buffer because writing bytes object.)
+    sys.stdout.buffer.write(struct.pack("i", len(msg_json_utf8)))
+    # Writes the message itself. (Writing to buffer because writing bytes object.)
+    sys.stdout.buffer.write(msg_json_utf8)
+    sys.stdout.flush()
+
+
+# Function to read a message from chrome.
+def read_msg():
+    # Reads the first 4 bytes of the message (which designates message length).
+    text_length_bytes = sys.stdin.buffer.read(4)
+    # Unpacks the first 4 bytes that are the message length. [0] required because unpack returns tuple with required data at index 0.
+    text_length = struct.unpack("i", text_length_bytes)[0]
+    # Reads and decodes the text (which is JSON) of the message.
+    text_undecoded = sys.stdin.buffer.read(text_length).decode("utf-8")
+    # [...] Then use the data.
+    msg = json.loads(text_undecoded)
+    #logging.debug(msg)
+
+    if msg['action'] == 'get_info':
+        getInfo(msg)
+
+    if msg['action'] == 'download':
+        download(msg)
+
+def Main():
+    read_msg()
+    sys.exit(0)
+
+if __name__ == '__main__':
+  Main()
