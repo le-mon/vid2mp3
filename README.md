@@ -18,13 +18,13 @@ host file loation:
 host manifest location:
 /etc/opt/chrome/native-messaging-hosts/com.company.app.json
 
-### Vivaldi:
+#### Vivaldi:
 host file loation:
 ~/.config/vivaldi/NativeMessagingHosts/com.company.app
 host manifest location:
 ~/.config/vivaldi/NativeMessagingHosts/com.company.app.json
 
-### Chromium:
+#### Chromium:
 host file loation:
 ~/.config/chromium/NativeMessagingHosts/com.company.app
 host manifest location:
