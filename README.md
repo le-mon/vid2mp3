@@ -10,26 +10,25 @@ you have to edit the paths in the host and manifest files to fit your environmen
 ### Dependencies:
 python-notify2 python-pytaglib ffmpeg youtube-dl
 
-### Install:
+### Install Host:
 
-#### host
-* Opera:
+#### Opera:
 host file loation:
 ~/.config/opera/NativeMessagingHosts/com.company.app
 host manifest location:
 /etc/opt/chrome/native-messaging-hosts/com.company.app.json
 
-* Vivaldi:
+### Vivaldi:
 host file loation:
 ~/.config/vivaldi/NativeMessagingHosts/com.company.app
 host manifest location:
 ~/.config/vivaldi/NativeMessagingHosts/com.company.app.json
 
-* Chromium:
+### Chromium:
 host file loation:
 ~/.config/chromium/NativeMessagingHosts/com.company.app
 host manifest location:
 ~/.config/chromium/NativeMessagingHosts/com.company.app.json
 
-#### extension
+### Install Extension
 edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)  
