@@ -4,7 +4,7 @@ Extension for chrome-based browsers to get mp3s from video sites, supported by y
 ### Notice:
 It's just for fun.
 Feel free to edit/improve in testing branch.
-I use this on my arch linux system.
+I use this on my arch linux.
 You have to edit the paths in the host.ini and manifest.json files to fit your environment
 
 ### Dependencies:
