@@ -3,6 +3,7 @@ var hostName = "com.hemperium.vid2mp3";
 var nativePort = null;
 var port = null;
 var tab_info = [];
+var error = null;
 
 chrome.runtime.onConnect.addListener(function(_port) {
   port = _port;
@@ -21,7 +22,12 @@ chrome.runtime.onConnect.addListener(function(_port) {
       }
     }
 
-    sendMessage(tab_info[msg.tab_id]);
+    if (error) {
+      sendMessage(error);
+      console.log(error.error);
+    } else {
+      sendMessage(tab_info[msg.tab_id]);
+    }
 
   });
   port.onDisconnect.addListener(function() {
@@ -36,10 +42,23 @@ function sendNativeMessage(msg) {
 }
 
 function onNativeMessage(msg) {
+  //console.log(msg);
+
+  if (msg.error) {
+    error = msg;
+  } else {
+    error = null;
+  }
 
   if (msg.action=="get_info" && msg.title!="none") {
     chrome.browserAction.setBadgeText({text: "1"});
     chrome.browserAction.setBadgeBackgroundColor({color: "red"});
+  } else if (msg.dl_status=="converting") {
+    chrome.browserAction.setBadgeText({text: "1"});
+    chrome.browserAction.setBadgeBackgroundColor({color: "yellow"});
+  } else if (msg.dl_status=="donw") {
+    chrome.browserAction.setBadgeText({text: "ok"});
+    chrome.browserAction.setBadgeBackgroundColor({color: "green"});
   }
 
   tab_info[msg.tab_id] = msg;
@@ -87,6 +106,9 @@ function handle_on_url() {
     } else if (tab_info[tab.id].dl_status=="done") {
       chrome.browserAction.setBadgeText({text: "ok"});
       chrome.browserAction.setBadgeBackgroundColor({color: "green"});
+    } else if (tab_info[tab.id].dl_status=="converting") {
+      chrome.browserAction.setBadgeText({text: "1"});
+      chrome.browserAction.setBadgeBackgroundColor({color: "yellow"});
     } else if (tab_info[tab.id].status=="is_valid_url") {
       chrome.browserAction.setBadgeText({text: "1"});
       chrome.browserAction.setBadgeBackgroundColor({color: "red"});

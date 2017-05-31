@@ -7,18 +7,33 @@ import taglib
 import logging
 import notify2
 import os
+from configparser import ConfigParser
+from os.path import expanduser
 
-userpath = '/home/user/Downloads'
+def ConfAndLog():
 
-logging.basicConfig(filename='logfile',level=logging.DEBUG)
+    global host_path
+    global download_path
+
+    conf_ini = 'com.hemperium.vid2mp3.ini'
+    conf = ConfigParser()
+    conf.read(conf_ini)
+
+    host_path = os.path.dirname(os.path.abspath(__file__))
+    download_path = conf.get('DEFAULT', 'download_path').strip('"')
+
+    logging.basicConfig(filename="logfile",level=logging.DEBUG)
+
 
 class MyLogger(object):
     def debug(self, msg):
         pass
+        #logging.debug(msg)
     def warning(self, msg):
-        pass
+        logging.warning(msg)
     def error(self, msg):
         logging.error(msg)
+        send_msg({"error":msg})
 
 def getInfo(msg):
 
@@ -77,7 +92,8 @@ def download(msg):
 
         send_msg(data)
 
-    destination = userpath + '%(title)s.%(ext)s'
+    destination = download_path+'%(title)s.%(ext)s'
+
     ydl_opts = {
         'format': 'bestaudio',
         'noplaylist' : True,
@@ -99,30 +115,30 @@ def download(msg):
         ydl.download([msg['url']])
 
 
-    file_path = download_target.rsplit('.',1)[0]+".mp3"
+    dl_file = download_target.rsplit('.',1)[0]+".mp3"
 
     if '-' in info['title']:
         raw_tags = info['title'].split("-")
-        song = taglib.File(file_path)
+        song = taglib.File(dl_file)
         song.tags["ARTIST"] = [raw_tags[0]]
         song.tags["TITLE"] = [raw_tags[1]]
         song.save()
     elif 'uploader' in info:
-        song = taglib.File(file_path)
+        song = taglib.File(dl_file)
         song.tags["ARTIST"] = [info['uploader']]
         song.tags["TITLE"] = [info['title']]
         song.save()
 
         infostr = info['title'].replace('/','_"')
-
-        filename_dest = userpath + info['uploader'] + " - " + infostr + ".mp3"
-        os.rename(file_path, filename_dest)
+        filename_new = info['uploader'] + " - " + infostr + ".mp3"
+        os.rename(gdl_file, expanduser(download_path) + filename_new)
 
     data['dl_status'] = "done"
     send_msg(data)
 
     notify2.init('Download Beendet')
-    icon = "/home/user/.config/opera/NativeMessagingHosts/icon128.png"
+    icon = host_path+"/icon128.png"
+    logging.debug(icon)
     n = notify2.Notification(info['title']+".mp3","wurde gespeichert",icon)
     n.show()
 
@@ -158,8 +174,10 @@ def read_msg():
         download(msg)
 
 def Main():
+
+    ConfAndLog()
     read_msg()
     sys.exit(0)
 
 if __name__ == '__main__':
-  Main()
+    Main()

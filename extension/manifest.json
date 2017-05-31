@@ -1,6 +1,7 @@
 {
+  // ID kclnelpcdadikjmjdmklfcdmanancdao
+  "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2Po2gWE7UoYX78oQC+7yANc6EVTxcbDP/4lq7WVwdbTSShTGlaYll6lmvDfzqANFl1FF6TaSNI5tp5VTWNIynFSasXcncFhUqwUmJ35MEwuaeD3pz2elWHlbzup3J+jHfuXEfDBZEDSXzUSeszffbTrRKXhL5RyekGmAMauRoICm/JZOesJOj6EJ5QahBJ+YaE4LY0GTraw3vaLolLy4wWHMvYd6koNnluPlEp1/7FfD4efJvDTaIGTAYfbbeePF5A2u2Pci/aS064KZ6mzkmnvL1ke4QlD9isQ6LDLZbZlOuVnT62n+NbddgCiiW6ViuSrwOJMXwMEjzU4gUYJtMwIDAQAB",
   "manifest_version": 2,
-
   "name": "Hemperion Musikdownloader",
   "description": "Fürs Hemp, damit sich die Musikplatte füllt",
   "version": "1.0",
