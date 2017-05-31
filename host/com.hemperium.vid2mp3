@@ -119,12 +119,12 @@ def download(msg):
 
     if '-' in info['title']:
         raw_tags = info['title'].split("-")
-        song = taglib.File(dl_file)
+        song = taglib.File(download_file)
         song.tags["ARTIST"] = [raw_tags[0]]
         song.tags["TITLE"] = [raw_tags[1]]
         song.save()
     elif 'uploader' in info:
-        song = taglib.File(dl_file)
+        song = taglib.File(download_file)
         song.tags["ARTIST"] = [info['uploader']]
         song.tags["TITLE"] = [info['title']]
         song.save()
