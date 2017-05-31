@@ -2,9 +2,9 @@
 Extension for chrome-based browsers to get mp3s from video sites, supported by youtube-dl
 
 ### Notice:
-It's just for fun. 
-Feel free to edit/improve in testing branch. 
-I use this on my arch linux system. 
+It's just for fun.
+Feel free to edit/improve in testing branch.
+I use this on my arch linux system.
 You have to edit the paths in the host.ini and manifest.json files to fit your environment
 
 ### Dependencies:
@@ -32,3 +32,5 @@ host manifest location:
 
 ### Install Extension
 edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)  
+
+just to testing
