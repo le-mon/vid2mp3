@@ -115,7 +115,7 @@ def download(msg):
         ydl.download([msg['url']])
 
 
-    dl_file = download_target.rsplit('.',1)[0]+".mp3"
+    download_file = download_target.rsplit('.',1)[0]+".mp3"
 
     if '-' in info['title']:
         raw_tags = info['title'].split("-")
@@ -131,7 +131,7 @@ def download(msg):
 
         infostr = info['title'].replace('/','_"')
         filename_new = info['uploader'] + " - " + infostr + ".mp3"
-        os.rename(gdl_file, expanduser(download_path) + filename_new)
+        os.rename(download_file, expanduser(download_path) + filename_new)
 
     data['dl_status'] = "done"
     send_msg(data)
