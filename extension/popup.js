@@ -26,7 +26,7 @@ port.onMessage.addListener(function(msg) {
     enableDL(msg);
   }
 
-  appendStatus(msg.status);
+  appendStatus(msg);
 
   if (msg.action=='download') {
 
@@ -103,8 +103,11 @@ function appendPfeil() {
   };
 }
 
-function appendStatus(status) {
-  switch (status) {
+function appendStatus(msg) {
+  switch (msg.status) {
+    default:
+      text = msg.error;
+      break;
     case "is_valid_url":
       text = "Heute im Angebot:";
       break;
@@ -117,8 +120,7 @@ function appendStatus(status) {
     case "is_playlist":
       text = "Playlists/Sets gehen nicht.<br />F&uuml;r ne Kiste Bier mach ichs aber!<br /><br />";
       break;
-    default:
-      text = status;
+
   }
   document.getElementById('status').innerHTML = "" +text+ "";
 }
