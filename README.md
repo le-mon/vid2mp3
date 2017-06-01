@@ -35,3 +35,5 @@ host manifest location:
 
 ### Install Extension
 edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)
+
+test2
