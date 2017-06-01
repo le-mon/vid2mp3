@@ -8,7 +8,7 @@ I use this on my arch linux.
 You have to edit the paths in the host.ini and manifest.json files to fit your environment.
 ###### Opera & Vivaldi:
 At the moment, conversation to mp3 only works, if additional libffmpeg.so is NOT installed.
-I don't know if this is youtube-dl related or a bug in vivaldi/chromium.  
+I don't know if this is youtube-dl related or a bug in vivaldi/chromium.
 
 ### Dependencies:
 python-notify2 python-pytaglib ffmpeg youtube-dl
@@ -35,3 +35,5 @@ host manifest location:
 
 ### Install Extension
 edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)
+
+test
