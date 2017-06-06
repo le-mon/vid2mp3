@@ -10,7 +10,7 @@ import os
 from configparser import ConfigParser
 from os.path import expanduser
 
-def ConfAndLog():
+def preparation():
 
     global host_path
     global download_path
@@ -24,6 +24,11 @@ def ConfAndLog():
 
     logging.basicConfig(filename="logfile",level=logging.DEBUG)
 
+    ### START Workarround for vivaldi and opera if *-ffmpeg-codecs Package installed:
+    if 'LD_PRELOAD' in os.environ:
+        del os.environ['LD_PRELOAD']
+        #logging.debug("[os.environ]: LD_PRELOAD deleted")
+    ### END Workarround
 
 class MyLogger(object):
     def debug(self, msg):
@@ -175,7 +180,7 @@ def read_msg():
 
 def Main():
 
-    ConfAndLog()
+    preparation()
     read_msg()
     sys.exit(0)
 

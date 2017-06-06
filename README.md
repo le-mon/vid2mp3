@@ -7,6 +7,10 @@ Feel free to edit/improve in testing branch.
 I use this on my arch linux.
 You have to edit the paths in the host.ini and manifest.json files to fit your environment.
 
+###### Opera & Vivaldi:
+There is a workarround to delete LD_PRELOAD from os.environ.
+This should be ok. 
+
 ### Dependencies:
 python-notify2 python-pytaglib ffmpeg youtube-dl
 
@@ -31,4 +35,4 @@ host manifest location:
 ~/.config/chromium/NativeMessagingHosts/com.company.app.json
 
 ### Install Extension
-edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)  
+edit path to host in manifest.json and "load unpacked extensions" in chrome://extensions (opera://extensions)
