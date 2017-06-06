@@ -6,9 +6,10 @@ It's just for fun.
 Feel free to edit/improve in testing branch.
 I use this on my arch linux.
 You have to edit the paths in the host.ini and manifest.json files to fit your environment.
+
 ###### Opera & Vivaldi:
-At the moment, conversation to mp3 only works, if additional libffmpeg.so is NOT installed.
-I don't know if this is youtube-dl related or a bug in vivaldi/chromium.
+There is a workarround to delete LD_PRELOAD from os.environ.
+This should be ok. 
 
 ### Dependencies:
 python-notify2 python-pytaglib ffmpeg youtube-dl
